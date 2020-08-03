@@ -14,10 +14,9 @@ export default function App() {
   const [minutes, setMinutes] = useState(2);
   const [seconds, setSeconds] = useState(0);
   const [display, setDisplay] = useState("");
-  const [running, setRunning] = useState(false);
+  const [runningSession, setRunning] = useState(true);
 
   function startCountdown() {
-    setRunning(prev => !prev);
     timer = setInterval(() => {
       setSeconds(prev => {
         if (prev === 0) {
@@ -46,27 +45,29 @@ export default function App() {
   }
 
   useEffect(() => {
-    if (!running) {
-      console.log("seconds updated not running");
-    } else {
-      if (seconds === 15) {
-        setMinutes(prev => {
-          if (prev === 0) {
-            return 0;
-          } else {
-            return prev - 1;
-          }
-        });
-      } else if (seconds === 0 && minutes === 0) {
-        //console.log("end 1 ", timer);
-        clearInterval(timer);
-        setRunning(prev => !prev);
+    if (seconds === 15) {
+      setMinutes(prev => {
+        if (prev === 0) {
+          return 0;
+        } else {
+          return prev - 1;
+        }
+      });
+    } else if (seconds === 0 && minutes === 0) {
+      //console.log("end 1 ", timer);
+      clearInterval(timer);
 
-        // CHANGE MINUTES TO NEW BREAK
-        setMinutes(breakLength);
-        // START BREAK TIMER
-        startCountdown();
-      }
+      // CHANGE MINUTES TO NEW BREAK
+      setMinutes(() => {
+        if (runningSession) {
+          return breakLength;
+        } else {
+          return sessionLength;
+        }
+      });
+      setRunning(prev => !prev);
+      // START BREAK TIMER
+      startCountdown();
     }
   }, [seconds]);
   useEffect(() => {
