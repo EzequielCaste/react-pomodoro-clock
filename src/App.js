@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./styles.css";
 import Session from "./Session";
+import Break from "./Break";
 
 function formatDate(num) {
   return num < 10 ? `0${num}:00` : `${num}:00`;
@@ -9,6 +10,7 @@ let timer = "";
 
 export default function App() {
   const [sessionLength, setSessionLength] = useState(2);
+  const [breakLength, setBreakLength] = useState(3);
   const [minutes, setMinutes] = useState(2);
   const [seconds, setSeconds] = useState(0);
   const [display, setDisplay] = useState("");
@@ -17,7 +19,6 @@ export default function App() {
   function startCountdown() {
     setRunning(prev => !prev);
     timer = setInterval(() => {
-      console.log(minutes, seconds); // 2 0
       setSeconds(prev => {
         if (prev === 0) {
           return 15;
@@ -34,6 +35,13 @@ export default function App() {
       setSessionLength(prevSession =>
         prevSession === 1 ? 1 : prevSession - 1
       );
+    }
+  }
+  function handleBreak(operation) {
+    if (operation === "+") {
+      setBreakLength(prevBreak => prevBreak + 1);
+    } else {
+      setBreakLength(prevBreak => (prevBreak === 1 ? 1 : prevBreak - 1));
     }
   }
 
@@ -54,7 +62,10 @@ export default function App() {
         clearInterval(timer);
         setRunning(prev => !prev);
 
+        // CHANGE MINUTES TO NEW BREAK
+        setMinutes(breakLength);
         // START BREAK TIMER
+        startCountdown();
       }
     }
   }, [seconds]);
@@ -71,6 +82,7 @@ export default function App() {
       </h1>
       <button onClick={() => startCountdown()}>Start</button>
       <Session session={sessionLength} clickHandler={handleSession} />
+      <Break pause={breakLength} clickHandler={handleBreak} />
     </>
   );
 }
