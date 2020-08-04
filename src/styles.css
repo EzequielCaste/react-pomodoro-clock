@@ -3,6 +3,23 @@
   text-align: center;
 }
 #root {
-  width: 500px;
-  margin: 0 auto;
+  width: 300px;
+  margin: 7rem auto;
+}
+.display {
+  background-color: gainsboro;
+  padding: 1rem;
+}
+#time-left {
+  text-align: center;
+  font-size: 2rem;
+}
+.function-buttons {
+  display: flex;
+  justify-content: space-evenly;
+}
+.controls {
+  margin-top: 1em;
+  display: flex;
+  justify-content: space-evenly;
 }

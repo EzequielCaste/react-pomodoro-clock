@@ -1,12 +1,14 @@
 import React from "react";
 
-export default function ToolBar({ start }) {
+export default function ToolBar({ start, handleReset }) {
   return (
-    <div>
-      <button onClick={start}> Start </button>
-      <button> Restart </button>
-      <button> Mute </button>
-      <button> Reset </button>
+    <div className="function-buttons">
+      <button id="start_stop" onClick={() => start()}>
+        Start
+      </button>
+      <button onClick={handleReset} id="reset">
+        Reset
+      </button>
     </div>
   );
 }

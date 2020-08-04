@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import "./styles.css";
-import Session from "./Session";
-import Break from "./Break";
+
+import TimerDisplay from "./TimerDisplay";
+import ToolBar from "./ToolBar";
+import Controls from "./Controls";
 
 function formatDate(num) {
   return num < 10 ? `0${num}:00` : `${num}:00`;
@@ -55,9 +57,8 @@ export default function App() {
       setBreakLength(prevBreak => (prevBreak === 1 ? 1 : prevBreak - 1));
     }
   }
-
   useEffect(() => {
-    if (seconds === 15) {
+    if (seconds === 59) {
       setMinutes(prev => {
         if (prev === 0) {
           return 0;
@@ -96,28 +97,25 @@ export default function App() {
     setCounting(false);
     document.getElementById("beep").load();
   }
-
   return (
     <>
-      <span id="timer-label">{runningSession ? "Session " : "Break "}</span>
-      <h3 id="time-left" style={{ display: "inline" }}>
-        {minutes < 10 ? `0${minutes}` : minutes}:
-        {seconds < 10 ? `0${seconds}` : seconds}
-      </h3>
+      <TimerDisplay
+        runningSession={runningSession}
+        minutes={minutes}
+        seconds={seconds}
+      />
       <br />
-      <button id="start_stop" onClick={() => start()}>
-        Start
-      </button>
-      <button onClick={handleReset} id="reset">
-        Reset
-      </button>
+      <ToolBar start={start} handleReset={handleReset} />
       <audio
         id="beep"
         src="https://github.com/ezzep66/react-test-pomodoro/raw/master/chime_bell_ding.wav"
       />
-
-      <Session session={sessionLength} clickHandler={handleSession} />
-      <Break pause={breakLength} clickHandler={handleBreak} />
+      <Controls
+        sessionLength={sessionLength}
+        handleSession={handleSession}
+        breakLength={breakLength}
+        handleBreak={handleBreak}
+      />
     </>
   );
 }
