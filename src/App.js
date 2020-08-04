@@ -98,7 +98,8 @@ export default function App() {
     document.getElementById("beep").load();
   }
   return (
-    <>
+    <div className="container">
+      <h1>React Pomodoro Clock</h1>
       <TimerDisplay
         runningSession={runningSession}
         minutes={minutes}
@@ -116,6 +117,6 @@ export default function App() {
         breakLength={breakLength}
         handleBreak={handleBreak}
       />
-    </>
+    </div>
   );
 }
