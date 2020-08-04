@@ -9,27 +9,39 @@ function formatDate(num) {
 let timer = "";
 
 export default function App() {
-  const [sessionLength, setSessionLength] = useState(2);
-  const [breakLength, setBreakLength] = useState(3);
-  const [minutes, setMinutes] = useState(2);
+  const [sessionLength, setSessionLength] = useState(25);
+  const [breakLength, setBreakLength] = useState(5);
+  const [minutes, setMinutes] = useState(25);
   const [seconds, setSeconds] = useState(0);
   const [display, setDisplay] = useState("");
-  const [runningSession, setRunning] = useState(true);
+  const [runningSession, setRunningSession] = useState(true);
+  const [counting, setCounting] = useState(false);
 
+  function start() {
+    if (!counting) {
+      startCountdown();
+      setCounting(prev => !prev);
+    } else {
+      clearInterval(timer);
+      setCounting(prev => !prev);
+    }
+  }
   function startCountdown() {
     timer = setInterval(() => {
       setSeconds(prev => {
         if (prev === 0) {
-          return 15;
+          return 59;
         } else {
           return prev - 1;
         }
       });
-    }, 300);
+    }, 1000);
   }
   function handleSession(operation) {
     if (operation === "+") {
-      setSessionLength(prevSession => prevSession + 1);
+      setSessionLength(prevSession =>
+        prevSession < 60 ? prevSession + 1 : 60
+      );
     } else {
       setSessionLength(prevSession =>
         prevSession === 1 ? 1 : prevSession - 1
@@ -38,7 +50,7 @@ export default function App() {
   }
   function handleBreak(operation) {
     if (operation === "+") {
-      setBreakLength(prevBreak => prevBreak + 1);
+      setBreakLength(prevBreak => (prevBreak < 60 ? prevBreak + 1 : 60));
     } else {
       setBreakLength(prevBreak => (prevBreak === 1 ? 1 : prevBreak - 1));
     }
@@ -54,9 +66,9 @@ export default function App() {
         }
       });
     } else if (seconds === 0 && minutes === 0) {
-      //console.log("end 1 ", timer);
+      // TIMER REACHES 00:00
+      document.getElementById("beep").play();
       clearInterval(timer);
-
       // CHANGE MINUTES TO NEW BREAK
       setMinutes(() => {
         if (runningSession) {
@@ -65,7 +77,7 @@ export default function App() {
           return sessionLength;
         }
       });
-      setRunning(prev => !prev);
+      setRunningSession(prev => !prev);
       // START BREAK TIMER
       startCountdown();
     }
@@ -74,14 +86,36 @@ export default function App() {
     setDisplay(() => formatDate(sessionLength));
     setMinutes(sessionLength);
   }, [sessionLength]);
+  function handleReset() {
+    clearInterval(timer);
+    setMinutes(25);
+    setBreakLength(5);
+    setSessionLength(25);
+    setSeconds(0);
+    setRunningSession(true);
+    setCounting(false);
+    document.getElementById("beep").load();
+  }
 
   return (
     <>
-      <h1>
+      <span id="timer-label">{runningSession ? "Session " : "Break "}</span>
+      <h3 id="time-left" style={{ display: "inline" }}>
         {minutes < 10 ? `0${minutes}` : minutes}:
         {seconds < 10 ? `0${seconds}` : seconds}
-      </h1>
-      <button onClick={() => startCountdown()}>Start</button>
+      </h3>
+      <br />
+      <button id="start_stop" onClick={() => start()}>
+        Start
+      </button>
+      <button onClick={handleReset} id="reset">
+        Reset
+      </button>
+      <audio
+        id="beep"
+        src="https://github.com/ezzep66/react-test-pomodoro/raw/master/chime_bell_ding.wav"
+      />
+
       <Session session={sessionLength} clickHandler={handleSession} />
       <Break pause={breakLength} clickHandler={handleBreak} />
     </>

@@ -3,7 +3,7 @@ import React from "react";
 export default function Break({ pause, clickHandler }) {
   return (
     <div id="break-label">
-      Break: {pause} <br />
+      Break: <span id="break-length">{pause}</span> <br />
       <button id="break-increment" onClick={() => clickHandler("+")}>
         +
       </button>
