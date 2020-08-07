@@ -4,4 +4,4 @@
 
 ![Test](https://i.imgur.com/ImmsQm6.png)
 
-Created with CodeSandbox
+Created CodeSandbox
